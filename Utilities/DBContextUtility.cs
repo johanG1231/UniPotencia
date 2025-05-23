@@ -5,16 +5,13 @@ namespace Backend_PotenciaPC.Utilities
 {
     public class DBContextUtility
     {
-        private static readonly string SERVER = "JOHAN\\SQLEXPRESS";
-        private static readonly string DATABASE = "PotenciaPC";
-
-        // Cadena de conexión usando autenticación de Windows
-        private static readonly string connectionString = $"Server=JOHAN\\SQLEXPRESS;Database=PotenciaPC;Integrated Security=True;TrustServerCertificate=True;";
-
+        private readonly string connectionString;
         private SqlConnection connection;
 
-        public DBContextUtility()
+        // Constructor que recibe la cadena de conexión
+        public DBContextUtility(string connectionString)
         {
+            this.connectionString = connectionString;
             connection = new SqlConnection(connectionString);
         }
 

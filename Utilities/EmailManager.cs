@@ -9,8 +9,8 @@ namespace Backend_PotenciaPC.Utilities
         private MailMessage email;
         private string Host = "smtp.gmail.com";
         private int Port = 587;
-        private string User = "incognitox1231@gmail.com";
-        private string Password = "ythuoklhfpxsflvs";
+        private string User = "potenciapc2025@gmail.com";
+        private string Password = "xdrrgspjxuyxbobt";
         private bool EnabledSSL = true;
         public EmailManager()
         {

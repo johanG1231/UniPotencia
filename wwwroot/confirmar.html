@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Confirmación de Cuenta</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400&display=swap');
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Roboto', sans-serif;
+            color: #eee;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            color: #00ffea;
+            text-shadow: 0 0 5px #00ffe7, 0 0 10px #00ffe7, 0 0 20px #00ffe7;
+            animation: pulse 2.5s infinite;
+        }
+
+        .message {
+            font-size: 2rem;
+            margin-top: 1rem;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 255, 234, 0.7), 0 0 40px rgba(0, 255, 234, 0.5);
+            display: inline-block;
+            max-width: 90vw;
+        }
+
+        .success {
+            color: #00ff7a;
+            background: #003d1f;
+            border: 2px solid #00ff7a;
+        }
+
+        .error {
+            color: #ff4c4c;
+            background: #3a0000;
+            border: 2px solid #ff4c4c;
+        }
+
+        .warning {
+            color: #ffcc00;
+            background: #3a3200;
+            border: 2px solid #ffcc00;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                text-shadow: 0 0 5px #00ffe7, 0 0 10px #00ffe7, 0 0 20px #00ffe7;
+            }
+
+            50% {
+                text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea, 0 0 30px #00ffea, 0 0 40px #00ffea;
+            }
+        }
+
+        /* Botón estilizado */
+        .btn-login {
+            margin-top: 2rem;
+            background: transparent;
+            border: 2px solid #00ffea;
+            color: #00ffea;
+            padding: 0.75rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea;
+            text-transform: uppercase;
+        }
+
+            .btn-login:hover {
+                background: #00ffea;
+                color: #0f2027;
+                box-shadow: 0 0 20px #00fff0, 0 0 40px #00fff0, 0 0 60px #00fff0;
+                transform: scale(1.05);
+            }
+    </style>
+</head>
+<body>
+    <h1>Confirmando cuenta...</h1>
+    <div id="result" class="message" style="visibility: hidden;">Cargando...</div>
+
+    <button class="btn-login" onclick="location.href='login.html'">Ir a Login</button>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
+        const resultDiv = document.getElementById("result");
+        const btnLogin = document.querySelector(".btn-login");
+
+        // Ocultamos el botón hasta que haya resultado
+        btnLogin.style.display = 'none';
+
+        if (!token) {
+            resultDiv.textContent = "❌ Token no proporcionado.";
+            resultDiv.className = "message error";
+            resultDiv.style.visibility = "visible";
+            btnLogin.style.display = 'inline-block';
+        } else {
+            fetch(`/api/User/ConfirmarCuenta?token=${token}`)
+                .then(response => {
+                    if (response.ok) {
+                        document.querySelector("h1").textContent = "✅ ¡Cuenta confirmada exitosamente!";
+                        resultDiv.style.visibility = "hidden";
+                    } else {
+                        document.querySelector("h1").textContent = "❌ Error al confirmar la cuenta.";
+                        resultDiv.style.visibility = "hidden";
+                    }
+                    btnLogin.style.display = 'inline-block';
+                })
+                .catch(() => {
+                    document.querySelector("h1").textContent = "⚠️ No se pudo conectar con el servidor.";
+                    resultDiv.style.visibility = "hidden";
+                    btnLogin.style.display = 'inline-block';
+                });
+        }
+    </script>
+</body>
+</html>

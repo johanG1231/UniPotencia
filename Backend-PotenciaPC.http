@@ -1,0 +1,6 @@
+@Backend_PotenciaPC_HostAddress = http://localhost:5145
+
+GET {{Backend_PotenciaPC_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

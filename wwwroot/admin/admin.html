@@ -1,0 +1,563 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Subir Producto - Admin</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400&display=swap');
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Roboto', sans-serif;
+            color: #eee;
+            min-height: 100vh;
+            padding: 80px 30px 30px 30px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            box-sizing: border-box;
+        }
+        #btnContainer {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+
+
+        h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ffea;
+            text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea88;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            color: #00ffd8;
+            text-shadow: 0 0 5px #00ffd888;
+        }
+
+        form {
+            background: rgba(15, 32, 39, 0.85);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px #00ffea44, inset 0 0 15px #00ffea22;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        input[type="text"],
+        textarea,
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            max-width: 90%;
+            padding: 10px 15px;
+            margin: 12px 0;
+            border-radius: 15px;
+            border: 2px solid #00ffea;
+            background: #112f38;
+            color: #eee;
+            font-size: 1rem;
+            font-family: 'Roboto', sans-serif;
+            box-shadow: inset 0 0 8px #00ffeabb;
+            transition: border-color 0.3s ease;
+            resize: vertical;
+        }
+
+            input[type="text"]:focus,
+            textarea:focus,
+            input[type="number"]:focus,
+            input[type="file"]:focus {
+                border-color: #00fff0;
+                box-shadow: 0 0 10px #00fff0, inset 0 0 15px #00fff088;
+                outline: none;
+            }
+
+        textarea {
+            min-height: 80px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            background: transparent;
+            border: 2px solid #00ffea;
+            color: #00ffea;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+            font-size: 1.1rem;
+            padding: 12px 0;
+            border-radius: 30px;
+            margin-top: 15px;
+            cursor: pointer;
+            box-shadow: 0 0 15px #00ffea, 0 0 35px #00ffea88;
+            transition: all 0.3s ease;
+            user-select: none;
+            text-transform: uppercase;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+            button[type="submit"]:hover {
+                background: #00ffea;
+                color: #0f2027;
+                box-shadow: 0 0 25px #00fff0, 0 0 45px #00fff0;
+                transform: scale(1.05);
+            }
+
+        table {
+            width: 100%;
+            max-width: 900px;
+            border-collapse: collapse;
+            background: rgba(15, 32, 39, 0.9);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 15px #00ffea55;
+            color: #00ffe7;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        thead tr {
+            background: #00ffea22;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #00ffea44;
+        }
+
+        tbody tr:hover {
+            background: #00ffea11;
+            cursor: default;
+        }
+
+        .acciones button {
+            background: #00ffea33;
+            border: 1px solid #00ffeaaa;
+            color: #00ffea;
+            padding: 6px 12px;
+            margin-right: 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            user-select: none;
+        }
+
+            .acciones button:hover {
+                background: #00ffeaaa;
+                color: #0f2027;
+                box-shadow: 0 0 8px #00ffea;
+            }
+
+        a {
+            color: #00ffea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+            a:hover {
+                color: #00fff0;
+                text-shadow: 0 0 8px #00fff0;
+            }
+        #modalBackdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            display: none;
+            z-index: 999;
+        }
+        /* Modal container */
+        #profileModal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 32, 39, 0.95);
+            padding: 25px 35px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px #00ffea88;
+            color: #00ffe7;
+            font-family: 'Roboto', sans-serif;
+            display: none;
+            z-index: 1000;
+            max-width: 300px;
+            text-align: center;
+        }
+
+            #profileModal h3 {
+                font-family: 'Orbitron', sans-serif;
+                color: #00ffea;
+                margin-bottom: 1rem;
+                text-shadow: 0 0 10px #00ffea;
+            }
+
+            #profileModal p {
+                margin: 8px 0;
+            }
+
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Roboto', sans-serif;
+            color: #eee;
+            min-height: 100vh;
+            padding: 60px 30px 30px 30px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ffea;
+            text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea88;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        #btnContainer {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        button {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border: 2px solid #00ffea;
+            background: transparent;
+            color: #00ffea;
+            box-shadow: 0 0 8px #00ffea, 0 0 20px #00ffea88;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+            button:hover {
+                background: #00ffea;
+                color: #0f2027;
+                box-shadow: 0 0 15px #00fff0, 0 0 40px #00fff0bb;
+                transform: scale(1.05);
+            }
+
+        #productos > div {
+            background: rgba(15, 32, 39, 0.85);
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px #00ffea44;
+            color: #00ffe7;
+            font-family: 'Roboto', sans-serif;
+            transition: background 0.3s ease;
+        }
+
+            #productos > div:hover {
+                background: rgba(0, 255, 234, 0.15);
+            }
+
+        #productos h3 {
+            margin: 0 0 8px 0;
+            color: #00ffd8;
+            text-shadow: 0 0 5px #00ffd888;
+        }
+
+        #productos p {
+            margin: 5px 0;
+        }
+
+        #productos button {
+            margin-top: 10px;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: transparent;
+            border: 2px solid #00ffea;
+            color: #00ffea;
+            box-shadow: 0 0 10px #00ffea;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+
+            #productos button:hover {
+                background: #00ffea;
+                color: #0f2027;
+                box-shadow: 0 0 15px #00fff0, 0 0 35px #00fff0bb;
+                transform: scale(1.05);
+            }
+
+        #mensaje {
+            margin-top: 20px;
+            color: #ff5555;
+            font-weight: bold;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Modal backdrop */
+        #modalBackdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            display: none;
+            z-index: 999;
+        }
+
+        /* Modal container */
+        #profileModal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 32, 39, 0.95);
+            padding: 25px 35px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px #00ffea88;
+            color: #00ffe7;
+            font-family: 'Roboto', sans-serif;
+            display: none;
+            z-index: 1000;
+            max-width: 300px;
+            text-align: center;
+        }
+
+            #profileModal h3 {
+                font-family: 'Orbitron', sans-serif;
+                color: #00ffea;
+                margin-bottom: 1rem;
+                text-shadow: 0 0 10px #00ffea;
+            }
+
+            #profileModal p {
+                margin: 8px 0;
+            }
+
+        #cerrarPerfil {
+            margin-top: 15px;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: transparent;
+            border: 2px solid #00ffea;
+            color: #00ffea;
+            box-shadow: 0 0 10px #00ffea;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+            #cerrarPerfil:hover {
+                background: #00ffea;
+                color: #0f2027;
+                box-shadow: 0 0 15px #00fff0, 0 0 35px #00fff0bb;
+                transform: scale(1.05);
+            }
+    </style>
+</head>
+<body>
+    <div id="btnContainer">
+        <button id="profileBtn">Perfil</button>
+        <button id="logoutBtn">Cerrar sesión</button>
+    </div>
+
+    <p style="text-align:center; font-weight:600; font-size:1.1rem; margin-top: 0; margin-bottom: 1rem; color:#00ffea; text-shadow: 0 0 5px #00ffea;">Bienvenido, <span id="adminName"></span></p>
+
+
+
+    <h2>Panel de administración</h2>
+    <p>Bienvenid@, <span id="adminName"></span></p>
+
+    <h3>Subir nuevo producto</h3>
+    <form id="uploadForm">
+        <input type="text" id="nombre" placeholder="Nombre del producto" required />
+        <textarea id="descripcion" placeholder="Descripción" required></textarea>
+        <input type="number" id="precio" placeholder="Precio (opcional)" />
+        <input type="file" id="archivo" accept=".bat" required />
+        <button type="submit">Subir producto</button>
+    </form>
+
+    <h3>Lista de productos</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Archivo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tablaProductos"></tbody>
+    </table>
+    <!-- Modal para mostrar perfil -->
+    <div id="modalBackdrop"></div>
+    <div id="profileModal">
+        <h3>Datos del Perfil</h3>
+        <p><strong>Nombre:</strong> <span id="perfilNombre"></span></p>
+        <p><strong>Correo:</strong> <span id="perfilCorreo"></span></p>
+        <p><strong>Rol:</strong> <span id="perfilRol"></span></p>
+        <button id="cerrarPerfil">Cerrar</button>
+    </div>
+
+    <!-- Fondo difuminado -->
+    <div id="modalBackdrop" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+background:rgba(0,0,0,0.6); z-index:1500;"></div>
+    <script>
+        const token = localStorage.getItem("token");
+        const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+        if (!token || !usuario || usuario.rol !== "Administrador") {
+            window.location.href = "/login.html";
+        }
+
+        document.getElementById("adminName").textContent = usuario.nombre || usuario.correo;
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            localStorage.clear();
+            window.location.href = "/login.html";
+        });
+
+        document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append("Nombre", document.getElementById("nombre").value);
+            formData.append("Descripcion", document.getElementById("descripcion").value);
+            formData.append("Precio", document.getElementById("precio").value || 0);
+            formData.append("archivo", document.getElementById("archivo").files[0]);
+
+            const res = await fetch("https://localhost:7158/api/Producto/Subir", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            if (res.ok) {
+                alert("Producto subido con éxito.");
+                listarProductos();
+            } else {
+                const error = await res.text();
+                alert("Error al subir producto: " + error);
+            }
+        });
+
+        async function listarProductos() {
+            const res = await fetch("https://localhost:7158/api/Producto/Todos", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const productos = await res.json();
+            const tabla = document.getElementById("tablaProductos");
+            tabla.innerHTML = "";
+            productos.forEach(p => {
+                const fila = document.createElement("tr");
+                fila.innerHTML = `
+                                          <td>${p.nombre}</td>
+                                          <td>${p.descripcion}</td>
+                                          <td><a href="${p.archivoUrl}" target="_blank" rel="noopener noreferrer">Descargar</a></td>
+                                          <td class="acciones">
+                                            <button onclick="modificarProducto(${p.id}, '${p.nombre}', '${p.descripcion}')">Modificar</button>
+                                            <button onclick="eliminarProducto(${p.id})">Eliminar</button>
+                                          </td>
+                                        `;
+                tabla.appendChild(fila);
+            });
+        }
+
+        function modificarProducto(id, nombre, descripcion) {
+            const nuevoNombre = prompt("Nuevo nombre:", nombre);
+            const nuevaDesc = prompt("Nueva descripción:", descripcion);
+            if (nuevoNombre && nuevaDesc) {
+                fetch(`https://localhost:7158/api/Producto/Editar/${id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        nombre: nuevoNombre,
+                        descripcion: nuevaDesc,
+                        precio: 0
+                    })
+                }).then(() => listarProductos());
+            }
+        }
+
+        function eliminarProducto(id) {
+            if (!confirm("¿Deseas eliminar este producto?")) return;
+            fetch(`https://localhost:7158/api/Producto/Eliminar/${id}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${token}` }
+            }).then(() => listarProductos());
+        }
+
+        listarProductos();
+
+        const profileBtn = document.getElementById("profileBtn");
+        const profileModal = document.getElementById("profileModal");
+        const modalBackdrop = document.getElementById("modalBackdrop");
+        const cerrarPerfilBtn = document.getElementById("cerrarPerfil");
+
+        profileBtn.addEventListener("click", () => {
+            document.getElementById("perfilNombre").textContent = usuario.nombre || "N/A";
+            document.getElementById("perfilCorreo").textContent = usuario.correo || "N/A";
+            document.getElementById("perfilRol").textContent = usuario.rol || "N/A";
+
+            profileModal.style.display = "block";
+            modalBackdrop.style.display = "block";
+        });
+
+        cerrarPerfilBtn.addEventListener("click", () => {
+            profileModal.style.display = "none";
+            modalBackdrop.style.display = "none";
+        });
+
+        modalBackdrop.addEventListener("click", () => {
+            profileModal.style.display = "none";
+            modalBackdrop.style.display = "none";
+        });
+
+
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Inicio - PotenciaPC</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400&display=swap');
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Roboto', sans-serif;
+            color: #eee;
+            min-height: 100vh;
+            padding: 60px 30px 30px 30px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ffea;
+            text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea88;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        #btnContainer {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        button {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border: 2px solid #00ffea;
+            background: transparent;
+            color: #00ffea;
+            box-shadow: 0 0 8px #00ffea, 0 0 20px #00ffea88;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+            button:hover {
+                background: #00ffea;
+                color: #0f2027;
+                box-shadow: 0 0 15px #00fff0, 0 0 40px #00fff0bb;
+                transform: scale(1.05);
+            }
+
+        #productos > div {
+            background: rgba(15, 32, 39, 0.85);
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px #00ffea44;
+            color: #00ffe7;
+            font-family: 'Roboto', sans-serif;
+            transition: background 0.3s ease;
+        }
+
+            #productos > div:hover {
+                background: rgba(0, 255, 234, 0.15);
+            }
+
+        #productos h3 {
+            margin: 0 0 8px 0;
+            color: #00ffd8;
+            text-shadow: 0 0 5px #00ffd888;
+        }
+
+        #productos p {
+            margin: 5px 0;
+        }
+
+        #productos button {
+            margin-top: 10px;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: transparent;
+            border: 2px solid #00ffea;
+            color: #00ffea;
+            box-shadow: 0 0 10px #00ffea;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+
+            #productos button:hover {
+                background: #00ffea;
+                color: #0f2027;
+                box-shadow: 0 0 15px #00fff0, 0 0 35px #00fff0bb;
+                transform: scale(1.05);
+            }
+
+        #mensaje {
+            margin-top: 20px;
+            color: #ff5555;
+            font-weight: bold;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="btnContainer">
+        <button onclick="window.location.href='crear-usuario.html'">Registrarse</button>
+        <button onclick="window.location.href='login.html'">Iniciar sesión</button>
+    </div>
+
+    <h1>Productos disponibles</h1>
+    <div id="productos"></div>
+    <div id="mensaje"></div>
+
+    <script>
+        const token = localStorage.getItem('token');
+
+        async function cargarProductos() {
+            try {
+                const res = await fetch('https://localhost:7158/api/Producto/Todos');
+                const productos = await res.json();
+                const contenedor = document.getElementById('productos');
+
+                if (!productos.length) {
+                    contenedor.innerHTML = '<p>No hay productos disponibles.</p>';
+                    return;
+                }
+
+                contenedor.innerHTML = '';
+                productos.forEach(p => {
+                    const div = document.createElement('div');
+
+                    div.innerHTML = `
+                <h3>${p.nombre}</h3>
+                <p>${p.descripcion}</p>
+                <p>Precio: $${p.precio}</p>
+              `;
+
+                    const btn = document.createElement('button');
+                    btn.textContent = 'Descargar';
+
+                    if (token) {
+                        btn.onclick = () => {
+                            window.location.href = '/login.html'; // Ajusta para la lógica real de descargas
+                        };
+                    } else {
+                        btn.onclick = () => {
+                            alert('Necesitas iniciar sesión para descargar.');
+                        };
+                    }
+
+                    div.appendChild(btn);
+                    contenedor.appendChild(div);
+                });
+            } catch (error) {
+                document.getElementById('mensaje').textContent = 'Error cargando productos.';
+                console.error(error);
+            }
+        }
+
+        cargarProductos();
+    </script>
+</body>
+</html>

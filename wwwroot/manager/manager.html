@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Panel de Manager - PotenciaPC</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400&display=swap');
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Roboto', sans-serif;
+            color: #eee;
+            min-height: 100vh;
+            padding: 80px 30px 30px 30px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ffea;
+            text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea88;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            color: #00ffd8;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 5px #00ffd888;
+        }
+
+        #btnContainer {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+
+        button {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border: 2px solid #00ffea;
+            background: transparent;
+            color: #00ffea;
+            box-shadow: 0 0 8px #00ffea, 0 0 20px #00ffea88;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+            button:hover {
+                background: #00ffea;
+                color: #0f2027;
+                box-shadow: 0 0 15px #00fff0, 0 0 40px #00fff0bb;
+                transform: scale(1.05);
+            }
+
+        #contenidoManager {
+            margin-top: 20px;
+            background: rgba(15, 32, 39, 0.85);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px #00ffea44;
+            font-family: 'Roboto', sans-serif;
+            color: #00ffe7;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="btnContainer">
+        <button id="logoutBtn">Cerrar Sesión</button>
+    </div>
+
+    <h1>Bienvenid@ Manager, <span id="managerName"></span></h1>
+
+    <div id="contenidoManager">
+        <h2>Panel Exclusivo para Managers</h2>
+        <p>Solo accesible para usuarios con rol de manager.</p>
+    </div>
+
+    <button onclick="descargarReporte()">Descargar Reporte PDF</button>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+
+        if (!token || !usuario || usuario.rol !== "Manager") {
+            window.location.href = '/login.html';
+        } else {
+            document.getElementById('managerName').textContent = usuario.nombre || usuario.correo;
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = '/login.html';
+        });
+
+        function descargarReporte() {
+            const token = localStorage.getItem('token');
+            fetch("https://localhost:7158/api/Manager/ReporteDescargasUsuarios", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Error descargando PDF");
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "reporte_usuarios.pdf";
+                    a.click();
+                })
+                .catch(err => alert("Error generando PDF: " + err.message));
+        }
+    </script>
+</body>
+</html>
